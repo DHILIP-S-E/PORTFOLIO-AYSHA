@@ -1,5 +1,17 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+import useIntersectionObserver from '../../hooks/useIntersectionObserver';
+
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
 const Card = styled.div`
   background: ${({ theme }) => theme.card};
@@ -9,10 +21,17 @@ const Card = styled.div`
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
+  opacity: ${({ isVisible }) => isVisible ? 1 : 0};
+  animation: ${({ isVisible }) => isVisible ? fadeIn : 'none'} 0.6s ease-out;
   
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  @media (max-width: 480px) {
+    padding: 15px;
+    border-radius: 12px;
   }
 `;
 
@@ -22,6 +41,34 @@ const ProjectImage = styled.img`
   object-fit: cover;
   border-radius: 12px;
   margin-bottom: 15px;
+  loading: lazy;
+  transition: opacity 0.3s ease;
+  
+  &:hover {
+    opacity: 0.9;
+  }
+  
+  @media (max-width: 480px) {
+    height: 180px;
+    border-radius: 8px;
+  }
+`;
+
+const ImagePlaceholder = styled.div`
+  width: 100%;
+  height: 200px;
+  background: ${({ theme }) => theme.card_light};
+  border-radius: 12px;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${({ theme }) => theme.text_secondary};
+  
+  @media (max-width: 480px) {
+    height: 180px;
+    border-radius: 8px;
+  }
 `;
 
 const ProjectTitle = styled.h3`
@@ -47,6 +94,10 @@ const TagsContainer = styled.div`
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 15px;
+  
+  @media (max-width: 480px) {
+    gap: 6px;
+  }
 `;
 
 const Tag = styled.span`
@@ -56,11 +107,20 @@ const Tag = styled.span`
   border-radius: 12px;
   font-size: 0.8rem;
   font-weight: 500;
+  
+  @media (max-width: 480px) {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+  }
 `;
 
 const ProjectLinks = styled.div`
   display: flex;
   gap: 10px;
+  
+  @media (max-width: 480px) {
+    gap: 8px;
+  }
 `;
 
 const ProjectLink = styled.a`
@@ -76,13 +136,29 @@ const ProjectLink = styled.a`
   &:hover {
     background: ${({ theme }) => theme.primary}CC;
   }
+  
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
 `;
 
 const ProjectCard = ({ project, setOpenModal }) => {
+  const [ref, isVisible] = useIntersectionObserver({ threshold: 0.1 });
+  
   return (
-    <Card onClick={() => setOpenModal({ state: true, project })}>
-      {project.image && (
-        <ProjectImage src={project.image} alt={project.title} />
+    <Card ref={ref} isVisible={isVisible} onClick={() => setOpenModal({ state: true, project })}>
+      {project.image ? (
+        <ProjectImage 
+          src={project.image} 
+          alt={project.title}
+          onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.nextSibling.style.display = 'flex';
+          }}
+        />
+      ) : (
+        <ImagePlaceholder>No Image</ImagePlaceholder>
       )}
       
       <ProjectTitle>{project.title}</ProjectTitle>

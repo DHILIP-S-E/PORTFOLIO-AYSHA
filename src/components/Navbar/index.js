@@ -94,40 +94,42 @@ const MobileIcon = styled.div`
   
   @media screen and (max-width: 768px) {
     display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate(-100%, 60%);
     font-size: 1.8rem;
     cursor: pointer;
     color: ${({ theme }) => theme.text_primary};
+    z-index: 1001;
   }
 `;
 
 const MobileMenu = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
-  height: 90vh;
-  position: absolute;
-  top: 70px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
   left: 0;
-  opacity: ${({ isOpen }) => (isOpen ? '100%' : '0')};
+  padding-top: 100px;
+  opacity: ${({ isOpen }) => (isOpen ? '1' : '0')};
   visibility: ${({ isOpen }) => (isOpen ? 'visible' : 'hidden')};
   transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(-100%)')};
   transition: all 0.3s ease;
   background: ${({ theme }) => theme.card_light};
-  z-index: 999;
+  z-index: 1000;
+  
+  @media screen and (min-width: 769px) {
+    display: none;
+  }
 `;
 
 const MobileLink = styled.a`
   text-decoration: none;
   color: ${({ theme }) => theme.text_primary};
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 500;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
   cursor: pointer;
   transition: color 0.3s ease;
   
@@ -147,21 +149,21 @@ const Navbar = () => {
       <NavContainer>
         <NavLogo href="#about">Portfolio</NavLogo>
         
-        <NavMenu>
+        <NavMenu role="navigation" aria-label="Main navigation">
           <NavItem>
-            <NavLink href="#about">About</NavLink>
+            <NavLink href="#about" aria-label="About section">About</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="#skills">Skills</NavLink>
+            <NavLink href="#skills" aria-label="Skills section">Skills</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="#projects">Projects</NavLink>
+            <NavLink href="#projects" aria-label="Projects section">Projects</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="#education">Education</NavLink>
+            <NavLink href="#education" aria-label="Education section">Education</NavLink>
           </NavItem>
           <NavItem>
-            <NavLink href="#contact">Contact</NavLink>
+            <NavLink href="#contact" aria-label="Contact section">Contact</NavLink>
           </NavItem>
         </NavMenu>
         
@@ -169,7 +171,12 @@ const Navbar = () => {
           GitHub
         </NavButton>
         
-        <MobileIcon onClick={toggleMenu}>
+        <MobileIcon 
+          onClick={toggleMenu}
+          role="button"
+          aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={isOpen}
+        >
           {isOpen ? <FaTimes /> : <FaBars />}
         </MobileIcon>
         

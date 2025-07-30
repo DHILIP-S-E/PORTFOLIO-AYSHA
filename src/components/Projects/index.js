@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import ProjectCard from './ProjectCard';
+import ProjectSearch from '../ProjectSearch';
+import SEO from '../SEO';
 import { loadMarkdownCollection } from '../../utils/contentLoader';
 
 const Container = styled.div`
@@ -34,6 +36,11 @@ const FilterButtons = styled.div`
   margin-bottom: 50px;
   flex-wrap: wrap;
   justify-content: center;
+  
+  @media (max-width: 480px) {
+    gap: 8px;
+    margin-bottom: 30px;
+  }
 `;
 
 const FilterButton = styled.button`
@@ -50,19 +57,34 @@ const FilterButton = styled.button`
     background: ${({ theme }) => theme.primary};
     color: white;
   }
+  
+  @media (max-width: 480px) {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
 `;
 
 const ProjectsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
   gap: 30px;
   width: 100%;
   max-width: 1200px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 15px;
+  }
 `;
 
 const Projects = ({ openModal, setOpenModal }) => {
   const [projects, setProjects] = useState([]);
   const [filter, setFilter] = useState('All');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -77,16 +99,28 @@ const Projects = ({ openModal, setOpenModal }) => {
   }, []);
 
   const categories = ['All', ...new Set(projects.map(project => project.category))];
-  const filteredProjects = filter === 'All' 
-    ? projects 
-    : projects.filter(project => project.category === filter);
+  
+  const filteredProjects = projects
+    .filter(project => filter === 'All' || project.category === filter)
+    .filter(project => 
+      project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (project.tags && project.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase())))
+    );
 
   return (
     <Container id="projects">
+      <SEO 
+        title="Projects - Aysha Dheesan Banu"
+        description="Explore my portfolio of web development and data science projects"
+        keywords="React projects, Python projects, Data Science, Web Development"
+      />
       <Title>Projects</Title>
       <Description>
         Here are some of the projects I've worked on, showcasing my skills in various technologies.
       </Description>
+      
+      <ProjectSearch onSearch={setSearchTerm} />
       
       <FilterButtons>
         {categories.map(category => (

@@ -29,10 +29,19 @@ const Description = styled.p`
 
 const SkillsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
   width: 100%;
   max-width: 1200px;
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 15px;
+  }
 `;
 
 const SkillCategory = styled.div`
@@ -41,6 +50,11 @@ const SkillCategory = styled.div`
   padding: 30px;
   border: 1px solid ${({ theme }) => theme.primary}20;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+  @media (max-width: 480px) {
+    padding: 20px;
+    border-radius: 12px;
+  }
 `;
 
 const CategoryTitle = styled.h3`
@@ -69,6 +83,11 @@ const SkillItem = styled.div`
   color: ${({ theme }) => theme.text_primary};
   font-size: 0.9rem;
   font-weight: 500;
+  
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
 `;
 
 const SkillIcon = styled.img`

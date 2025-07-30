@@ -36,6 +36,15 @@ const ContactForm = styled.form`
   padding: 40px;
   border: 1px solid ${({ theme }) => theme.primary}20;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  
+  @media (max-width: 768px) {
+    padding: 30px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 20px;
+    border-radius: 12px;
+  }
 `;
 
 const FormGroup = styled.div`
@@ -53,21 +62,34 @@ const Label = styled.label`
 const Input = styled.input`
   width: 100%;
   padding: 12px 16px;
-  border: 2px solid ${({ theme }) => theme.primary}30;
+  border: 2px solid ${({ hasError, theme }) => hasError ? '#f44336' : theme.primary + '30'};
   border-radius: 8px;
   background: transparent;
   color: ${({ theme }) => theme.text_primary};
   font-size: 1rem;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
   
   &:focus {
     outline: none;
-    border-color: ${({ theme }) => theme.primary};
+    border-color: ${({ hasError, theme }) => hasError ? '#f44336' : theme.primary};
   }
   
   &::placeholder {
     color: ${({ theme }) => theme.text_secondary};
   }
+  
+  @media (max-width: 480px) {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+`;
+
+const ErrorText = styled.span`
+  color: #f44336;
+  font-size: 0.8rem;
+  margin-top: 4px;
+  display: block;
 `;
 
 const TextArea = styled.textarea`
@@ -81,6 +103,7 @@ const TextArea = styled.textarea`
   min-height: 120px;
   resize: vertical;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
   
   &:focus {
     outline: none;
@@ -89,6 +112,12 @@ const TextArea = styled.textarea`
   
   &::placeholder {
     color: ${({ theme }) => theme.text_secondary};
+  }
+  
+  @media (max-width: 480px) {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    min-height: 100px;
   }
 `;
 
@@ -131,6 +160,7 @@ const Contact = () => {
   const [contactData, setContactData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState({ show: false, type: '', text: '' });
+  const [errors, setErrors] = useState({});
   const form = useRef();
 
   useEffect(() => {
@@ -145,8 +175,43 @@ const Contact = () => {
     fetchContact();
   }, []);
 
+  const validateForm = (formData) => {
+    const newErrors = {};
+    
+    if (!formData.get('from_name')?.trim()) {
+      newErrors.from_name = 'Name is required';
+    }
+    
+    const email = formData.get('from_email');
+    if (!email?.trim()) {
+      newErrors.from_email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.from_email = 'Email is invalid';
+    }
+    
+    if (!formData.get('subject')?.trim()) {
+      newErrors.subject = 'Subject is required';
+    }
+    
+    if (!formData.get('message')?.trim()) {
+      newErrors.message = 'Message is required';
+    }
+    
+    return newErrors;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    const formData = new FormData(form.current);
+    const validationErrors = validateForm(formData);
+    
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+    
+    setErrors({});
     setIsSubmitting(true);
 
     try {
@@ -197,8 +262,10 @@ const Contact = () => {
             id="from_name"
             name="from_name"
             placeholder="Your Name"
+            hasError={errors.from_name}
             required
           />
+          {errors.from_name && <ErrorText>{errors.from_name}</ErrorText>}
         </FormGroup>
         
         <FormGroup>

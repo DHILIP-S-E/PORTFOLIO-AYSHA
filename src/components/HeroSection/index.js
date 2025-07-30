@@ -26,7 +26,12 @@ const HeroContent = styled.div`
   @media (max-width: 960px) {
     flex-direction: column;
     text-align: center;
-    gap: 40px;
+    gap: 30px;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 20px;
+    padding: 0 10px;
   }
 `;
 
@@ -51,7 +56,11 @@ const Title = styled.h1`
   line-height: 1.2;
   
   @media (max-width: 768px) {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
+  }
+  
+  @media (max-width: 480px) {
+    font-size: 1.8rem;
   }
 `;
 
@@ -78,11 +87,15 @@ const Description = styled.p`
 
 const SocialLinks = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 15px;
   margin-top: 20px;
   
   @media (max-width: 960px) {
     justify-content: center;
+  }
+  
+  @media (max-width: 480px) {
+    gap: 12px;
   }
 `;
 
@@ -101,6 +114,12 @@ const SocialLink = styled.a`
   &:hover {
     background: ${({ theme }) => theme.primary};
     transform: translateY(-5px);
+  }
+  
+  @media (max-width: 480px) {
+    width: 45px;
+    height: 45px;
+    font-size: 1.3rem;
   }
 `;
 
@@ -132,8 +151,14 @@ const ProfileImage = styled.img`
   box-shadow: 0 0 30px ${({ theme }) => theme.primary}40;
   
   @media (max-width: 768px) {
-    width: 280px;
-    height: 280px;
+    width: 250px;
+    height: 250px;
+  }
+  
+  @media (max-width: 480px) {
+    width: 200px;
+    height: 200px;
+    border: 3px solid ${({ theme }) => theme.primary};
   }
 `;
 

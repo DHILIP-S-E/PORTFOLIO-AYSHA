@@ -48,6 +48,12 @@ const EducationCard = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     text-align: center;
+    padding: 20px;
+  }
+  
+  @media (max-width: 480px) {
+    padding: 15px;
+    border-radius: 12px;
   }
 `;
 
@@ -124,10 +130,8 @@ const Education = () => {
             <EducationContent>
               <SchoolName>{edu.school}</SchoolName>
               {edu.degree && <Degree>{edu.degree}</Degree>}
-              }
               <Duration>{edu.date}</Duration>
               {edu.grade && <Grade>Grade: {edu.grade}</Grade>}
-              }
               <EducationDescription>{edu.desc}</EducationDescription>
             </EducationContent>
           </EducationCard>
